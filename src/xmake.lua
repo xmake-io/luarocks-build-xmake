@@ -261,7 +261,7 @@ end
 function xmake.run(rockspec, no_install)
 
    -- Get rockspec
-   assert(rockspec:type() == "rockspec")
+   assert(not rockspec.type || rockspec:type() == "rockspec")
    local build = rockspec.build
    local variables = build.variables or {}
    util.variable_substitutions(variables, rockspec.variables)
