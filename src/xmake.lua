@@ -6,8 +6,11 @@ local fs      = require("luarocks.fs")
 local util    = require("luarocks.util")
 local dir     = require("luarocks.dir")
 local path    = require("luarocks.path")
-local cfg     = require("luarocks.core.cfg")
 local builtin = require("luarocks.build.builtin")
+local cfg_ok, cfg = pcall(require, "luarocks.core.cfg")
+if not cfg_ok then
+    cfg = require("luarocks.cfg")
+end
 
 -- From builtin.autoextract_libs
 local function autoextract_libs(external_dependencies, variables)
