@@ -264,7 +264,7 @@ function xmake.run(rockspec, no_install)
    util.variable_substitutions(variables, rockspec.variables)
 
    -- Check xmake
-   local xmake = rockspec.variables.XMAKE
+   local xmake = "xmake"
    local ok, err_msg = fs.is_tool_available(xmake, "XMake")
    if not ok then
       return nil, err_msg
