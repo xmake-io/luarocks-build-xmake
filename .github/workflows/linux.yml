@@ -1,0 +1,18 @@
+name: Linux
+
+on:
+  pull_request:
+  push:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        # tests
+      - name: tests
+        run: |
+          echo "hello"

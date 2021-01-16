@@ -1,0 +1,20 @@
+name: Windows
+
+on:
+  pull_request:
+  push:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+        # tests
+      - name: tests
+        run: |
+          echo "hello"
+
