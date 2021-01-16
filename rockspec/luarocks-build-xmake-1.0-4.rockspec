@@ -1,5 +1,5 @@
 package = "luarocks-build-xmake"
-version = "1.0-3"
+version = "1.0-4"
 source = {
     url = "git://github.com/xmake-io/luarocks-build-xmake",
     tag = "1.0"
@@ -18,7 +18,7 @@ dependencies = {
 build = {
     type = "builtin",
 	modules = {
-		["luarocks.build.xmake"] = "xmake.lua"
+		["luarocks.build.xmake"] = "src/xmake.lua"
 	},
 	copy_directories = {}
 }
