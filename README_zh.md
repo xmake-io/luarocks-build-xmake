@@ -67,7 +67,7 @@ build = {
             sources = "tests/example1/src/test.c"
         }
     },
-	copy_directories = {}
+    copy_directories = {}
 }
 ```
 

@@ -17,8 +17,8 @@ dependencies = {
 }
 build = {
     type = "builtin",
-	modules = {
-		["luarocks.build.xmake"] = "src/xmake.lua"
-	},
-	copy_directories = {}
+    modules = {
+        ["luarocks.build.xmake"] = "src/xmake.lua"
+    },
+    copy_directories = {}
 }
