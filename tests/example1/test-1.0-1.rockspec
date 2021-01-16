@@ -12,10 +12,7 @@ build = {
     type = "xmake",
     modules = {
         test = {
-            sources = {
-                "test/src/main.c",
-                "test/src/interface.c"
-            }
+            sources = "tests/example1/src/test.c"
         }
     },
 	copy_directories = {}
