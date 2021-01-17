@@ -11,9 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        arch: [x64, x86]
-        luaVersion: ["5.3.5", "5.1.5", "luajit-2.0.5"]
-        luarocksVersion: ["3.5.0", "3.0.1"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -26,15 +23,8 @@ jobs:
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop install lua-for-windows
-          if ("${{ matrix.arch }}" -eq "x64") {
-            Write-Output "luarocksArch=64" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-          } else {
-            Write-Output "luarocksArch=32" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-          }
-          Invoke-WebRequest "http://luarocks.github.io/luarocks/releases/luarocks-${{ matrix.luarocksVersion }}-windows-${{ env.luarocksArch }}.zip" -UseBasicParsing -OutFile .\luarocks.zip
-          Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
 
       - name: Tests
         run: |
-         ./luarocks/luarocks.exe build tests/example1/test-1.0-1.rockspec
-         ./luarocks/luarocks.exe luarocks build tests/example2/test-1.0-1.rockspec
+         luarocks.exe build tests/example1/test-1.0-1.rockspec
+         luarocks.exe luarocks build tests/example2/test-1.0-1.rockspec
