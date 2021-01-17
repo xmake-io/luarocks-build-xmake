@@ -268,9 +268,11 @@ function xmake.run(rockspec, no_install)
 
    -- Check xmake
    local xmake = "xmake"
-   local ok, err_msg = fs.is_tool_available(xmake, "XMake")
-   if not ok then
-      return nil, err_msg
+   if fs.is_tool_available then
+       local ok, err_msg = fs.is_tool_available(xmake, "XMake")
+       if not ok then
+          return nil, err_msg
+       end
    end
 
    -- If inline xmake is present create xmake.lua from it.
