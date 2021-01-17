@@ -21,7 +21,7 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-      - uses: xpol/setup-lua@v1
+      - uses: xpol/setup-lua@master
         with:
           lua-version: ${{ matrix.luaVersion }}
 
