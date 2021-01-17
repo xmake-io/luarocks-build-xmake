@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        version: ["2.4.4", "3.5.0"]
+        version: ["3.5.0"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -19,8 +19,8 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-      - uses: leafo/gh-actions-lua@master
-      - uses: leafo/gh-actions-luarocks@master
+      - uses: leafo/gh-actions-lua@v8
+      - uses: leafo/gh-actions-luarocks@v4
         with:
           luarocksVersion: ${{ matrix.version }}
 
