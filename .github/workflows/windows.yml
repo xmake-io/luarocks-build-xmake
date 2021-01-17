@@ -25,5 +25,5 @@ jobs:
           scoop install lua
           Invoke-WebRequest "http://luarocks.github.io/luarocks/releases/luarocks-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
-          ./luarocks/luarocks install --local --verbose rockspecs/example1-1.0-1.rockspec
+          ./luarocks/luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
