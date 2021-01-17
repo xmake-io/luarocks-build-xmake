@@ -47,14 +47,66 @@
 
 替换 luarocks 内置的构建系统去构建 C/C++ 模块，指定 xmake 作为构建类型，并添加 `luarocks-build-xmake` 依赖项。
 
-## rockspec 例子
+## 例子1 (带有 xmake.lua)
+
+如果模块工程中使用了 xmake.lua 来维护构建，那么我们可以直接使用 xmake 去构建它，rockspec 文件中不需要额外的配置构建规则。
+
+```
+├── src
+│   ├── test.c
+│   └── test.h
+└── xmake.lua
+```
+
+#### xmake.lua
 
 ```lua
-package = "test"
+add_rules("mode.debug", "mode.release")
+
+add_requires("lua")
+target("example1.hello")
+    add_rules("luarocks.module")
+    add_files("src/test.c")
+    add_packages("lua")
+```
+
+#### rockspec
+
+```lua
+package = "example1"
 version = "1.0-1"
 source = {
     url = "git://github.com/xmake-io/luarocks-build-xmake",
-    tag = "1.0"
+    tag = "example1"
+}
+dependencies = {
+    "lua >= 5.1",
+    "luarocks-build-xmake"
+}
+build = {
+    type = "xmake",
+    copy_directories = {}
+}
+```
+
+## 例子2 (没有 xmake.lua)
+
+如果模块工程中没有使用 xmake.lua 来维护，那么我们也可以使用 xmake 替代 luarocks 内置的构建来编译，只需要在 rockspec 文件中去描述构建规则。
+
+```
+├── src
+    ├── test.c
+    └── test.h
+```
+
+#### rockspec
+
+```lua
+package = "example2"
+version = "1.0-1"
+source = {
+    url = "git://github.com/xmake-io/luarocks-build-xmake",
+    tag = "example2"
 }
 dependencies = {
     "lua >= 5.1",
@@ -63,11 +115,10 @@ dependencies = {
 build = {
     type = "xmake",
     modules = {
-        test = {
-            sources = "tests/example1/src/test.c"
+        ["example2.hello"] = {
+            sources = "src/test.c"
         }
     },
     copy_directories = {}
 }
 ```
-
