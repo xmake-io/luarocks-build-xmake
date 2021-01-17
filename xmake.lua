@@ -35,12 +35,12 @@ rule("luarocks.module")
 
         -- add lua library
         local has_lua = false
-        local includedirs = get_config("includedirs")
+        local includedirs = get_config("includedirs") -- pass lua library from luarocks-build-xmake/xmake.lua
         if includedirs and includedirs:find("lua", 1, true) then
-           -- has_lua = true
+            has_lua = true
         end
-        print(has_lua)
         if not has_lua then
+            -- user use `add_requires/add_packages` to add lua/luajit package
             for _, pkg in ipairs(target:get("packages")) do
                 if pkg == "lua" or pkg == "luajit" then
                     has_lua = true
@@ -48,8 +48,6 @@ rule("luarocks.module")
                 end
             end
         end
-        print(has_lua)
-        print(includedirs)
         if not has_lua then
             target:add(find_package("lua"))
         end
@@ -60,8 +58,6 @@ rule("luarocks.module")
     end)
 rule_end()
 
-add_requires("lua")
 target("example1.hello")
     add_rules("luarocks.module")
     add_files("src/test.c")
-    add_packages("lua")
