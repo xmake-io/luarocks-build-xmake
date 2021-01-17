@@ -12,10 +12,73 @@ if not cfg_ok then
     cfg = require("luarocks.cfg")
 end
 
--- patch util.matchquote for lower luarocks version
+-- patch util.matchquote for luarocks 2.x
 if not util.matchquote then
     function util.matchquote(s)
        return (s:gsub("[?%-+*%[%].%%()$^]","%%%1"))
+    end
+end
+
+-- get host and arch
+local function get_host_arch()
+    local raw_os_name, raw_arch_name = '', ''
+    local popen_status, popen_result = pcall(io.popen, "")
+    if popen_status then
+        popen_result:close()
+        raw_os_name = io.popen('uname -s','r'):read('*l')
+        raw_arch_name = io.popen('uname -m','r'):read('*l')
+    else
+        local env_OS = os.getenv('OS')
+        local env_ARCH = os.getenv('PROCESSOR_ARCHITECTURE')
+        if env_OS and env_ARCH then
+            raw_os_name, raw_arch_name = env_OS, env_ARCH
+        end
+    end
+    raw_os_name = (raw_os_name):lower()
+    raw_arch_name = (raw_arch_name):lower()
+
+    local os_patterns = {
+        ['windows'] = 'windows',
+        ['linux'] = 'linux',
+        ['mac'] = 'macosx',
+        ['darwin'] = 'macosx',
+        ['^mingw'] = 'mingw',
+        ['^cygwin'] = 'windows',
+        ['bsd$'] = 'bsd',
+        ['SunOS'] = 'solaris',
+    }
+
+    local arch_patterns = {
+        ['^x86$'] = 'x86',
+        ['i[%d]86'] = 'x86',
+        ['amd64'] = 'x86_64',
+        ['x86_64'] = 'x86_64',
+        ['Power Macintosh'] = 'powerpc',
+        ['^arm'] = 'arm',
+        ['^mips'] = 'mips',
+    }
+
+    local os_name, arch_name = 'unknown', 'unknown'
+    for pattern, name in pairs(os_patterns) do
+        if raw_os_name:match(pattern) then
+            os_name = name
+            break
+        end
+    end
+    for pattern, name in pairs(arch_patterns) do
+        if raw_arch_name:match(pattern) then
+            arch_name = name
+            break
+        end
+    end
+    return os_name, arch_name
+end
+
+-- patch cfg.is_platform for luarocks 2.x
+if not cfg.is_platform then
+    function cfg.is_platform(plat)
+        local os_name = get_host_arch()
+        return os_name == plat
     end
 end
 
@@ -57,9 +120,9 @@ local function add_platform_configs(info, rockspec, name)
    end
 
    -- Add platform configuration
-   if XMAKE_PLAT == "mingw" or cfg.is_platform("mingw32") then
+   if XMAKE_PLAT == "mingw" or cfg.is_platform("mingw") then
       table.insert(info._syslinks, variables.MSVCRT or "m")
-   elseif cfg.is_platform("win32") then
+   elseif cfg.is_platform("windows") then
       local exported_name = name:gsub("%.", "_")
       exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
       table.insert(info._shflags, "/export:" .. "luaopen_"..exported_name)
@@ -136,7 +199,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
              if info.libdirs then
                 for _, libdir in ipairs(info.libdirs) do
                    file:write("    add_linkdirs('" .. libdir .. "')\n")
-                   if not cfg.is_platform("win32") and not cfg.is_platform("mingw32") and cfg.gcc_rpath then
+                   if not cfg.is_platform("windows") and not cfg.is_platform("mingw") and cfg.gcc_rpath then
                       file:write("    add_rpathdirs('" .. libdir .. "')\n")
                    end
                 end
@@ -206,7 +269,7 @@ local function xmake_config_args(rockspec, build_variables)
    end
    if XMAKE_PLAT then
       args = args .. " -p " .. XMAKE_PLAT
-   elseif cfg.is_platform("mingw32") then
+   elseif cfg.is_platform("mingw") then
       args = args .. " -p mingw"
    end
    if XMAKE_ARCH then
@@ -258,7 +321,7 @@ local function xmake_config_args(rockspec, build_variables)
    if variables.LUA_INCDIR then
       args = args .. " --includedirs=" .. variables.LUA_INCDIR
    end
-   if cfg.link_lua_explicitly or XMAKE_PLAT == "mingw" or cfg.is_platform("mingw32") then
+   if cfg.link_lua_explicitly or XMAKE_PLAT == "mingw" or cfg.is_platform("mingw") then
       if variables.LUA_LIBDIR then
          args = args .. " --linkdirs=" .. variables.LUA_LIBDIR
       end
