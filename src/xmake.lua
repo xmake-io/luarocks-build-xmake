@@ -182,24 +182,25 @@ local function autogen_xmakefile(xmakefile, rockspec)
 end
 
 -- Get xmake configuration arguments
-local function xmake_config_args(variables)
+local function xmake_config_args(rockspec, build_variables)
 
    local args = ""
-   local XMAKE_PLAT                = variables.XMAKE_PLAT or os.getenv("XMAKE_PLAT")
-   local XMAKE_ARCH                = variables.XMAKE_ARCH or os.getenv("XMAKE_ARCH")
-   local XMAKE_MODE                = variables.XMAKE_ARCH or os.getenv("XMAKE_MODE")
-   local XMAKE_SDK                 = variables.XMAKE_SDK or os.getenv("XMAKE_SDK")
-   local XMAKE_MINGW               = variables.XMAKE_MINGW or os.getenv("XMAKE_MINGW")
-   local XMAKE_TOOLCHAIN           = variables.XMAKE_TOOLCHAIN or os.getenv("XMAKE_TOOLCHAIN")
-   local XMAKE_CC                  = variables.XMAKE_CC or os.getenv("XMAKE_CC")
-   local XMAKE_LD                  = variables.XMAKE_LD or os.getenv("XMAKE_LD")
-   local XMAKE_CFLAGS              = variables.XMAKE_CFLAGS or os.getenv("XMAKE_CFLAGS")
-   local XMAKE_LDFLAGS             = variables.XMAKE_LDFLAGS or os.getenv("XMAKE_LDFLAGS")
-   local XMAKE_VS                  = variables.XMAKE_VS or os.getenv("XMAKE_VS")
-   local XMAKE_VS_SDKVER           = variables.XMAKE_VS_SDKVER or os.getenv("XMAKE_VS_SDKVER")
-   local XMAKE_VS_RUNTIME          = variables.XMAKE_VS_RUNTIME or os.getenv("XMAKE_VS_RUNTIME")
-   local XMAKE_VS_TOOLSET          = variables.XMAKE_VS_TOOLSET or os.getenv("XMAKE_VS_TOOLSET")
-   local XMAKE_XCODE_TARGET_MINVER = variables.XMAKE_XCODE_TARGET_MINVER or os.getenv("XMAKE_XCODE_TARGET_MINVER")
+   local variables                 = rockspec.variables
+   local XMAKE_PLAT                = build_variables.XMAKE_PLAT or os.getenv("XMAKE_PLAT")
+   local XMAKE_ARCH                = build_variables.XMAKE_ARCH or os.getenv("XMAKE_ARCH")
+   local XMAKE_MODE                = build_variables.XMAKE_ARCH or os.getenv("XMAKE_MODE")
+   local XMAKE_SDK                 = build_variables.XMAKE_SDK or os.getenv("XMAKE_SDK")
+   local XMAKE_MINGW               = build_variables.XMAKE_MINGW or os.getenv("XMAKE_MINGW")
+   local XMAKE_TOOLCHAIN           = build_variables.XMAKE_TOOLCHAIN or os.getenv("XMAKE_TOOLCHAIN")
+   local XMAKE_CC                  = build_variables.XMAKE_CC or os.getenv("XMAKE_CC")
+   local XMAKE_LD                  = build_variables.XMAKE_LD or os.getenv("XMAKE_LD")
+   local XMAKE_CFLAGS              = build_variables.XMAKE_CFLAGS or os.getenv("XMAKE_CFLAGS")
+   local XMAKE_LDFLAGS             = build_variables.XMAKE_LDFLAGS or os.getenv("XMAKE_LDFLAGS")
+   local XMAKE_VS                  = build_variables.XMAKE_VS or os.getenv("XMAKE_VS")
+   local XMAKE_VS_SDKVER           = build_variables.XMAKE_VS_SDKVER or os.getenv("XMAKE_VS_SDKVER")
+   local XMAKE_VS_RUNTIME          = build_variables.XMAKE_VS_RUNTIME or os.getenv("XMAKE_VS_RUNTIME")
+   local XMAKE_VS_TOOLSET          = build_variables.XMAKE_VS_TOOLSET or os.getenv("XMAKE_VS_TOOLSET")
+   local XMAKE_XCODE_TARGET_MINVER = build_variables.XMAKE_XCODE_TARGET_MINVER or os.getenv("XMAKE_XCODE_TARGET_MINVER")
    if XMAKE_PLAT then
       args = args .. " -p " .. XMAKE_PLAT
    elseif cfg.is_platform("mingw32") then
@@ -250,7 +251,6 @@ local function xmake_config_args(variables)
    if XMAKE_XCODE_TARGET_MINVER then
       args = args .. " --target_minver=" .. XMAKE_XCODE_TARGET_MINVER
    end
-   print("LUA_INCDIR", variables.LUA_INCDIR)
    -- add lua library
    if variables.LUA_INCDIR then
       args = args .. " --includedirs=" .. variables.LUA_INCDIR
@@ -283,11 +283,8 @@ function xmake.run(rockspec, no_install)
    -- Get rockspec
    assert(not rockspec.type or rockspec:type() == "rockspec")
    local build = rockspec.build
-   local variables = build.variables or {}
-   print("variables", variables.LUA_INCDIR)
-   print("variables2", rockspec.variables.LUA_INCDIR)
-   util.variable_substitutions(variables, rockspec.variables)
-   print("variables3", variables.LUA_INCDIR)
+   local build_variables = build.variables or {}
+   util.variable_substitutions(build_variables, rockspec.variables)
 
    -- Check xmake
    local xmake = "xmake"
@@ -330,7 +327,7 @@ function xmake.run(rockspec, no_install)
    end
 
    -- Do configure
-   local args = xmake_config_args(variables)
+   local args = xmake_config_args(rockspec, build_variables)
    if not fs.execute_string(xmake .. " f --root -y" .. args) then
       return nil, "Failed configuring."
    end
