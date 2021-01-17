@@ -85,7 +85,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
    -- Patch build
    local build = rockspec.build
    if not build.modules then
-      if rockspec:format_is_at_least("3.0") then
+      if rockspec.format_is_at_least and rockspec:format_is_at_least("3.0") then
          local libs, incdirs, libdirs = autoextract_libs(rockspec.external_dependencies, rockspec.variables)
          local install, copy_directories
          build.modules, install, copy_directories = builtin.autodetect_modules(libs, incdirs, libdirs)
