@@ -51,6 +51,13 @@ A fork of built-in build system for C++ rocks. Specify "xmake" as build type and
 
 We can build c/c++ modules if the project contain xmake.lua
 
+```
+├── src
+│   ├── test.c
+│   └── test.h
+└── xmake.lua
+```
+
 ```lua
 add_rules("mode.debug", "mode.release")
 
@@ -91,6 +98,12 @@ build = {
 ```
 
 ## Example2 (without xmake.lua)
+
+```
+├── src
+    ├── test.c
+    └── test.h
+```
 
 ```lua
 package = "example2"
