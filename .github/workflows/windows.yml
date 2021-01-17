@@ -21,12 +21,11 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-      - uses: xpol/setup-lua@master
-        with:
-          lua-version: ${{ matrix.luaVersion }}
 
       - name: Installation
         run: |
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop install lua-for-windows
           if ("${{ matrix.arch }}" -eq "x64") {
             Write-Output "luarocksArch=64" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
           } else {
