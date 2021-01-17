@@ -41,6 +41,9 @@ rule("luarocks.module")
         end
         print(has_lua)
         print(includedirs)
+        if not has_lua then
+            target:add(find_package("lua"))
+        end
     end)
     on_install(function (target)
         local moduledir = path.directory((target:name():gsub('%.', '/')))
