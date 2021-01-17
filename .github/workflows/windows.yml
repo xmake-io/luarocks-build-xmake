@@ -21,8 +21,8 @@ jobs:
 
       - name: Tests
         run: |
-          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-          scoop install lua
+          #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          #scoop install lua
           Invoke-WebRequest "http://luarocks.github.io/luarocks/releases/luarocks-3.5.0-win32.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks/luarocks-3.5.0-win32
