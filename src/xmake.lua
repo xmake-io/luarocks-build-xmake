@@ -62,14 +62,9 @@ local function add_platform_configs(info, rockspec, name)
       table.insert(info._shflags, dir.path(variables.LUA_LIBDIR, variables.LUALIB))
       table.insert(info._syslinks, variables.MSVCRT or "m")
    elseif cfg.is_platform("win32") then
-      local deffile = name .. ".def"
-      local def = io.open(dir.path(fs.current_dir(), deffile), "w+")
       local exported_name = name:gsub("%.", "_")
       exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
-      def:write("EXPORTS\n")
-      def:write("luaopen_"..exported_name.."\n")
-      def:close()
-      table.insert(info._shflags, "-def:" .. deffile)
+      table.insert(info._shflags, "/export:" .. "luaopen_"..exported_name)
       table.insert(info._shflags, dir.path(variables.LUA_LIBDIR, variables.LUALIB))
    else
       if cfg.link_lua_explicitly then
