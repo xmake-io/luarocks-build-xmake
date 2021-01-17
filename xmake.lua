@@ -37,7 +37,7 @@ rule("luarocks.module")
         local has_lua = false
         local includedirs = get_config("includedirs")
         if includedirs and includedirs:find("lua", 1, true) then
-            has_lua = true
+           -- has_lua = true
         end
         print(has_lua)
         if not has_lua then
