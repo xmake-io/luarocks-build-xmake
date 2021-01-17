@@ -284,7 +284,10 @@ function xmake.run(rockspec, no_install)
    assert(not rockspec.type or rockspec:type() == "rockspec")
    local build = rockspec.build
    local variables = build.variables or {}
+   print("variables", variables.LUA_INCDIR)
+   print("variables2", rockspec.variables.LUA_INCDIR)
    util.variable_substitutions(variables, rockspec.variables)
+   print("variables3", variables.LUA_INCDIR)
 
    -- Check xmake
    local xmake = "xmake"
