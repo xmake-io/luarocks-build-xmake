@@ -34,11 +34,19 @@ rule("luarocks.module")
         end
 
         -- add lua library
-        local has_lua = target:pkg("lua") or target:pkg("luajit")
-        print(has_lua)
+        local has_lua = false
         local includedirs = get_config("includedirs")
         if includedirs and includedirs:find("lua", 1, true) then
             has_lua = true
+        end
+        print(has_lua)
+        if not has_lua then
+            for _, pkg in ipairs(target:get("packages")) do
+                if pkg == "lua" or pkg == "luajit" then
+                    has_lua = true
+                    break
+                end
+            end
         end
         print(has_lua)
         print(includedirs)
