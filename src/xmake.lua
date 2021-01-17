@@ -201,7 +201,7 @@ local function xmake_config_args(variables)
    local XMAKE_CC                  = variables.XMAKE_CC or os.getenv("XMAKE_CC")
    local XMAKE_LD                  = variables.XMAKE_LD or os.getenv("XMAKE_LD")
    local XMAKE_CFLAGS              = variables.XMAKE_CFLAGS or os.getenv("XMAKE_CFLAGS")
-   local XMAKE_LDFLAGS             = variables.XMAKE_CFLAGS or os.getenv("XMAKE_LDFLAGS")
+   local XMAKE_LDFLAGS             = variables.XMAKE_LDFLAGS or os.getenv("XMAKE_LDFLAGS")
    local XMAKE_VS                  = variables.XMAKE_VS or os.getenv("XMAKE_VS")
    local XMAKE_VS_SDKVER           = variables.XMAKE_VS_SDKVER or os.getenv("XMAKE_VS_SDKVER")
    local XMAKE_VS_RUNTIME          = variables.XMAKE_VS_RUNTIME or os.getenv("XMAKE_VS_RUNTIME")
@@ -239,6 +239,9 @@ local function xmake_config_args(variables)
    if XMAKE_LDFLAGS then
       args = args .. " --shflags=" .. XMAKE_LDFLAGS
    end
+   if XMAKE_LDFLAGS then
+      args = args .. " --ldflags=" .. XMAKE_LDFLAGS
+   end
    if XMAKE_VS then
       args = args .. " --vs=" .. XMAKE_VS
    end
@@ -253,6 +256,16 @@ local function xmake_config_args(variables)
    end
    if XMAKE_XCODE_TARGET_MINVER then
       args = args .. " --target_minver=" .. XMAKE_XCODE_TARGET_MINVER
+   end
+   -- add lua library
+   if variables.LUA_INCDIR then
+      args = args .. " --includedirs=" .. variables.LUA_INCDIR
+   end
+   if variables.LUA_LIBDIR then
+      args = args .. " --linkdirs=" .. variables.LUA_LIBDIR
+   end
+   if variables.LUALIB then
+      args = args .. " --syslinks=" .. variables.LUALIB
    end
    return args
 end
