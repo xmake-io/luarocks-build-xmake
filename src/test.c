@@ -1,7 +1,7 @@
 #include "test.h"
 
-int luaopen_test_hello1 (lua_State *L)
+int luaopen_test_hello2 (lua_State *L)
 {
-    lua_pushstring(L, "hello1");
+    lua_pushstring(L, "hello2");
     return 1;
 }
