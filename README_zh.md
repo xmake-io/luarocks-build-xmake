@@ -60,16 +60,14 @@
 
 #### xmake.lua
 
-我们需要使用 `add_requires("lua")` 添加 lua 依赖，并且使用 `add_rules("luarocks.module")` 添加针对 luarocks 模块构建规则。
+我们需要使用 `add_rules("luarocks.module")` 添加针对 luarocks 模块构建规则。
 
 ```lua
 add_rules("mode.debug", "mode.release")
 
-add_requires("lua")
 target("example1.hello")
     add_rules("luarocks.module")
     add_files("src/test.c")
-    add_packages("lua")
 ```
 
 #### rockspec
