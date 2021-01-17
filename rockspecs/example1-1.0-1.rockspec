@@ -10,5 +10,6 @@ dependencies = {
 }
 build = {
     type = "xmake",
+    modules = {},
     copy_directories = {}
 }
