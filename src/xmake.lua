@@ -311,7 +311,7 @@ function xmake.run(rockspec, no_install)
 
    -- Do build and install
    local do_build, do_install
-   if rockspec:format_is_at_least("3.0") then
+   if rockspec.format_is_at_least and rockspec:format_is_at_least("3.0") then
       do_build   = (build.build_pass   == nil) and true or build.build_pass
       do_install = (build.install_pass == nil) and true or build.install_pass
    else
