@@ -8,17 +8,21 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        os: [macos-latest]
+        version: ["2.4.4", "3.5.0"]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-
-      - name: Installation
-        run: |
-          brew install luarocks
+      - uses: leafo/gh-actions-lua@v8
+      - uses: leafo/gh-actions-luarocks@v4
+        with:
+          luarocksVersion: ${{ matrix.version }}
 
       - name: Tests
         run: |
