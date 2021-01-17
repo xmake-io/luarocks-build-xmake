@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        version: ["2.4.4", "3.5.0"]
+        version: ["3.5.0", "2.4.3"]
     runs-on: ${{ matrix.os }}
 
     steps:
