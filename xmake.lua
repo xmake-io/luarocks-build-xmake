@@ -39,7 +39,6 @@ rule("luarocks.module")
             if not result then
                 local config = os.iorun("luarocks config")
                 if config then
-                    print(config)
                     local LUALIB     = config:match("LUALIB = \"(.-)\"")
                     local LUA_INCDIR = config:match("LUA_INCDIR = \"(.-)\"")
                     local LUA_LIBDIR = config:match("LUA_LIBDIR = \"(.-)\"")
@@ -53,7 +52,6 @@ rule("luarocks.module")
                     detectcache:save()
                 end
             end
-            print(result)
             return result
         end}
         if not lua then
