@@ -47,14 +47,57 @@
 
 A fork of built-in build system for C++ rocks. Specify "xmake" as build type and "luarocks-build-xmake" as dependency to use it.
 
-## Example rockspec
+## Example1 (with xmake.lua)
+
+We can build c/c++ modules if the project contain xmake.lua
 
 ```lua
-package = "test"
+add_rules("mode.debug", "mode.release")
+
+add_requires("lua")
+target("example1.hello")
+    if is_plat("macosx") then
+        set_kind("binary")
+        set_filename("hello.so")
+        add_ldflags("-bundle", "-undefined dynamic_lookup", {force = true})
+    else
+        set_kind("shared")
+        set_basename("hello")
+    end
+    set_symbols("none")
+    add_files("src/test.c")
+    add_packages("lua")
+    on_install(function (target)
+        local moduledir = path.directory((target:name():gsub('%.', '/')))
+        import('target.action.install')(target, {libdir = path.join('lib', moduledir), bindir = path.join('lib', moduledir)})
+    end)
+```
+
+```lua
+package = "example1"
 version = "1.0-1"
 source = {
     url = "git://github.com/xmake-io/luarocks-build-xmake",
-    tag = "1.0"
+    tag = "example1"
+}
+dependencies = {
+    "lua >= 5.1",
+    "luarocks-build-xmake"
+}
+build = {
+    type = "xmake",
+    copy_directories = {}
+}
+```
+
+## Example2 (without xmake.lua)
+
+```lua
+package = "example2"
+version = "1.0-1"
+source = {
+    url = "git://github.com/xmake-io/luarocks-build-xmake",
+    tag = "example2"
 }
 dependencies = {
     "lua >= 5.1",
@@ -63,8 +106,8 @@ dependencies = {
 build = {
     type = "xmake",
     modules = {
-        test = {
-            sources = "tests/example1/src/test.c"
+        ["example2.hello"] = {
+            sources = "src/test.c"
         }
     },
     copy_directories = {}
