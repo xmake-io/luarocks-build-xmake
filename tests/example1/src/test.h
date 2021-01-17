@@ -1,6 +1,6 @@
 #include "lua.h"
 #include "lualib.h"
 
-int luaopen_test_hello (lua_State *L);
+int luaopen_test_hello1 (lua_State *L);
 
 

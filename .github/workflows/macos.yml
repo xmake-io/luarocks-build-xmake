@@ -31,3 +31,5 @@ jobs:
         run: |
           luarocks build tests/example1/test-1.0-1.rockspec
           luarocks build tests/example2/test-1.0-1.rockspec
+          lua -e "print(require(\"test.hello1\"))"
+          lua -e "print(require(\"test.hello2\"))"

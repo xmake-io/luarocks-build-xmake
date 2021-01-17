@@ -306,6 +306,7 @@ function xmake.run(rockspec, no_install)
 
    -- Dump xmake.lua if be verbose mode
    if cfg.verbose then
+      print(xmakefile)
       local file = io.open(xmakefile, "r")
       if file then
          print(file:read('a+'))
