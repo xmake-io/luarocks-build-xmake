@@ -309,7 +309,7 @@ function xmake.run(rockspec, no_install)
       print(xmakefile)
       local file = io.open(xmakefile, "r")
       if file then
-         print(file:read('a+'))
+         print(file:read("*all"))
          file:close()
       end
    end
