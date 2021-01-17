@@ -58,8 +58,8 @@ rule("luarocks.module")
             lua = find_package("lua")
         end
         if lua then
-            if target:is_plat("macosx") then
-                -- we need not link lua on macosx because we use "-undefined dynamic_lookup"
+            -- we need not link lua explicitly
+            if target:is_plat("macosx", "linux", "bsd") then
                 lua.links = nil
             end
             target:add(lua)
