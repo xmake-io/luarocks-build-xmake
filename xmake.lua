@@ -20,11 +20,11 @@ rule("luarocks.module")
             target:set("basename", modulename)
         end
 
-        -- export symbols, TODO def
+        -- export symbols
         if target:is_plat("windows") then
             local exported_name = target:name():gsub("%.", "_")
             exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
-            target:add("--shflags", "/export:luaopen_" .. exported_name, {force = true})
+            target:add("shflags", "/export:luaopen_" .. exported_name, {force = true})
         else
             target:set("symbols", "none")
         end
