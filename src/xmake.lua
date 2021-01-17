@@ -12,6 +12,13 @@ if not cfg_ok then
     cfg = require("luarocks.cfg")
 end
 
+-- patch util.matchquote for lower luarocks version
+if not util.matchquote then
+    function util.matchquote(s)
+       return (s:gsub("[?%-+*%[%].%%()$^]","%%%1"))
+    end
+end
+
 -- From builtin.autoextract_libs
 local function autoextract_libs(external_dependencies, variables)
    if not external_dependencies then
