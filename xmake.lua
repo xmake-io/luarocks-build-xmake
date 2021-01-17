@@ -10,6 +10,7 @@ target("example1.hello")
         set_kind("shared")
         set_basename("hello")
     end
+    set_symbols("none")
     add_files("src/test.c")
     add_packages("lua")
     on_install(function (target)
