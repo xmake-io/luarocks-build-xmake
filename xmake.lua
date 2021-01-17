@@ -38,14 +38,10 @@ rule("luarocks.module")
             local result = detectcache:get("luarocks.module.lua")
             if not result then
                 local config = os.iorun("luarocks config")
-                print("luarocks config", config)
                 if config then
                     local LUALIB     = config:match("LUALIB = \"(.-)\"")
                     local LUA_INCDIR = config:match("LUA_INCDIR = \"(.-)\"")
                     local LUA_LIBDIR = config:match("LUA_LIBDIR = \"(.-)\"")
-                    print("LUALIB", LUALIB)
-                    print("LUA_INCDIR", LUA_INCDIR)
-                    print("LUA_LIBDIR", LUA_LIBDIR)
                     if LUALIB and LUA_INCDIR and LUA_LIBDIR then
                         result = result or {}
                         result.links = project_target.linkname(LUALIB)
@@ -55,9 +51,8 @@ rule("luarocks.module")
                     detectcache:set("luarocks.module.lua", result)
                     detectcache:save()
                 end
-                print(result)
-                return result
             end
+            return result
         end}
         if not lua then
             lua = find_package("lua")
