@@ -18,10 +18,10 @@ rule("luarocks.module")
         -- set library name
         local modulename = target:name():split('.', {plain = true})
         modulename = modulename[#modulename]
-        if target:is_plat("macosx") then
-            target:set("filename", modulename .. ".so")
-        else
+        if target:is_plat("windows", "mingw") then
             target:set("basename", modulename)
+        else
+            target:set("filename", modulename .. ".so")
         end
 
         -- export symbols
