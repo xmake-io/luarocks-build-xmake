@@ -21,7 +21,13 @@ rule("luarocks.module")
         end
 
         -- export symbols, TODO def
-        target:set("symbols", "none")
+        if target:is_plat("windows") then
+            local exported_name = target:name():gsub("%.", "_")
+            exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
+            target:add("--shflags", "/export:luaopen_" .. exported_name, {force = true})
+        else
+            target:set("symbols", "none")
+        end
     end)
     on_install(function (target)
         local moduledir = path.directory((target:name():gsub('%.', '/')))
