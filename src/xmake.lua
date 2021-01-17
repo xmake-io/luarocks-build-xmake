@@ -311,7 +311,7 @@ function xmake.run(rockspec, no_install)
 
    -- Do configure
    local args = xmake_config_args(variables)
-   if not fs.execute_string(xmake .. " f -y" .. args) then
+   if not fs.execute_string(xmake .. " f --root -y" .. args) then
       return nil, "Failed configuring."
    end
 
@@ -326,12 +326,12 @@ function xmake.run(rockspec, no_install)
    end
 
    if do_build then
-      if not fs.execute_string(xmake .. (cfg.verbose and " -vD" or "")) then
+      if not fs.execute_string(xmake .. " --root" .. (cfg.verbose and " -vD" or "")) then
          return nil, "Failed building."
       end
    end
    if do_install and not no_install then
-      if not fs.execute_string(xmake .. " install -y -o output") then
+      if not fs.execute_string(xmake .. " install --root -y -o output") then
          return nil, "Failed installing."
       end
    end
