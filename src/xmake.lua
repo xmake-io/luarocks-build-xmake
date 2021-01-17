@@ -64,6 +64,7 @@ local function add_platform_configs(info, rockspec, name)
       exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
       table.insert(info._shflags, "/export:" .. "luaopen_"..exported_name)
    end
+   print("LUA_INCDIR2", variables.LUA_INCDIR)
 end
 
 -- Generate xmake.lua from builtin source files
@@ -249,6 +250,7 @@ local function xmake_config_args(variables)
    if XMAKE_XCODE_TARGET_MINVER then
       args = args .. " --target_minver=" .. XMAKE_XCODE_TARGET_MINVER
    end
+   print("LUA_INCDIR", variables.LUA_INCDIR)
    -- add lua library
    if variables.LUA_INCDIR then
       args = args .. " --includedirs=" .. variables.LUA_INCDIR
