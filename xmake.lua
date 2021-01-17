@@ -3,6 +3,10 @@ add_rules("mode.debug", "mode.release")
 rule("luarocks.module")
     before_load(function (target)
 
+        -- imports
+        import("core.cache.detectcache")
+        import("core.project.target", {alias = "project_target"})
+
         -- set kind
         if target:is_plat("macosx") then
             target:set("kind", "binary")
@@ -28,6 +32,38 @@ rule("luarocks.module")
         else
             target:set("symbols", "none")
         end
+
+        -- find lua library
+        local lua = try {function ()
+            local result = detectcache:get("luarocks.module.lua")
+            if not result then
+                local config = os.iorun("luarocks config")
+                if config then
+                    local LUALIB     = config:match("LUALIB = \"(.-)\"")
+                    local LUA_INCDIR = config:match("LUA_INCDIR = \"(.-)\"")
+                    local LUA_LIBDIR = config:match("LUA_LIBDIR = \"(.-)\"")
+                    if LUALIB and LUA_INCDIR and LUA_LIBDIR then
+                        result = result or {}
+                        result.links = project_target.linkname(LUALIB)
+                        result.linkdirs = {LUA_LIBDIR}
+                        result.includedirs = {LUA_INCDIR}
+                    end
+                    detectcache:set("luarocks.module.lua", result)
+                    detectcache:save()
+                end
+                return result
+            end
+        end}
+        if not lua then
+            lua = find_package("lua")
+        end
+        if lua then
+            if target:is_plat("macosx") then
+                -- we need not link lua on macosx because we use "-undefined dynamic_lookup"
+                lua.links = nil
+            end
+            target:add(lua)
+        end
     end)
     on_install(function (target)
         local moduledir = path.directory((target:name():gsub('%.', '/')))
@@ -35,9 +71,7 @@ rule("luarocks.module")
     end)
 rule_end()
 
-add_requires("lua")
 target("example1.hello")
     add_rules("luarocks.module")
     add_files("src/test.c")
-    add_packages("lua")
 
