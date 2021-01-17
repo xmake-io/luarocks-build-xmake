@@ -51,7 +51,6 @@ local function add_platform_configs(info, rockspec, name)
    info._cflags   = info._cflags or {}
    info._shflags  = info._shflags or {}
    info._syslinks = info._syslinks or {}
-   table.insert(info.incdirs, variables.LUA_INCDIR)
    if not XMAKE_PLAT then
       table.insert(info._cflags, variables.CFLAGS)
       table.insert(info._shflags, variables.LIBFLAG)
@@ -59,18 +58,11 @@ local function add_platform_configs(info, rockspec, name)
 
    -- Add platform configuration
    if XMAKE_PLAT == "mingw" or cfg.is_platform("mingw32") then
-      table.insert(info._shflags, dir.path(variables.LUA_LIBDIR, variables.LUALIB))
       table.insert(info._syslinks, variables.MSVCRT or "m")
    elseif cfg.is_platform("win32") then
       local exported_name = name:gsub("%.", "_")
       exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
       table.insert(info._shflags, "/export:" .. "luaopen_"..exported_name)
-      table.insert(info._shflags, dir.path(variables.LUA_LIBDIR, variables.LUALIB))
-   else
-      if cfg.link_lua_explicitly then
-        table.insert(info.libdirs, variables.LUA_LIBDIR)
-        table.insert(info.libraries, "lua")
-      end
    end
 end
 
@@ -261,11 +253,21 @@ local function xmake_config_args(variables)
    if variables.LUA_INCDIR then
       args = args .. " --includedirs=" .. variables.LUA_INCDIR
    end
-   if variables.LUA_LIBDIR then
-      args = args .. " --linkdirs=" .. variables.LUA_LIBDIR
-   end
-   if variables.LUALIB then
-      args = args .. " --syslinks=" .. variables.LUALIB
+   if cfg.link_lua_explicitly or XMAKE_PLAT == "mingw" or cfg.is_platform("mingw32") then
+      if variables.LUA_LIBDIR then
+         args = args .. " --linkdirs=" .. variables.LUA_LIBDIR
+      end
+      if variables.LUALIB then
+         local lualib = variables.LUALIB
+         if lualib:find("^lib", 1) then
+            lualib = lualib:match("lib(.*)%..-")
+         else
+            lualib = lualib:match("(.*)%..-")
+         end
+         if lualib then
+            args = args .. " --syslinks=" .. lualib
+         end
+      end
    end
    return args
 end
