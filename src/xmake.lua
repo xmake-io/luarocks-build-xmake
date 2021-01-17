@@ -129,6 +129,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
              else
                 file:write('    set_kind("shared")\n')
              end
+             file:write('    set_symbols("none")\n')
              file:write('    set_filename("' .. module_name .. '")\n')
              add_platform_configs(info, rockspec, name)
              for _, source in ipairs(sources) do
@@ -283,7 +284,7 @@ function xmake.run(rockspec, no_install)
    end
 
    -- If inline xmake is present create xmake.lua from it.
-   local xmakefile = fs.current_dir() .. "/xmake.lua"
+   local xmakefile = dir.path(fs.current_dir(), "xmake.lua")
    if type(build.xmake) == "string" then
       local file = assert(io.open(xmakefile, "w"))
       file:write(build.xmake)
