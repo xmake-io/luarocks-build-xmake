@@ -201,6 +201,9 @@ local function xmake_config_args(rockspec, build_variables)
    local XMAKE_VS_RUNTIME          = build_variables.XMAKE_VS_RUNTIME or os.getenv("XMAKE_VS_RUNTIME")
    local XMAKE_VS_TOOLSET          = build_variables.XMAKE_VS_TOOLSET or os.getenv("XMAKE_VS_TOOLSET")
    local XMAKE_XCODE_TARGET_MINVER = build_variables.XMAKE_XCODE_TARGET_MINVER or os.getenv("XMAKE_XCODE_TARGET_MINVER")
+   if cfg.verbose then
+      args = args .. " -vD"
+   end
    if XMAKE_PLAT then
       args = args .. " -p " .. XMAKE_PLAT
    elseif cfg.is_platform("mingw32") then
