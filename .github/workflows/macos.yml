@@ -29,7 +29,7 @@ jobs:
 
       - name: Tests
         run: |
-          luarocks build tests/example1/test-1.0-1.rockspec
-          lua -e "print(require(\"test.hello1\"))"
-          luarocks build tests/example2/test-1.0-1.rockspec
-          lua -e "print(require(\"test.hello2\"))"
+          luarocks install --local rockspec/example1-1.0-1.rockspec
+          lua -e "print(require(\"example1.hello\"))"
+          luarocks install --local rockspec/example2-1.0-1.rockspec
+          lua -e "print(require(\"example2.hello\"))"

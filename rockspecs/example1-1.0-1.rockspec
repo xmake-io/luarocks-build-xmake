@@ -11,7 +11,7 @@ dependencies = {
 build = {
     type = "xmake",
     modules = {
-        ["test.hello1"] = {
+        ["example1.hello"] = {
             sources = "src/test.c"
         }
     },
