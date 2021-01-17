@@ -23,7 +23,7 @@ jobs:
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop install lua-for-windows
-          luarocks install --local rockspecs/example1-1.0-1.rockspec
+          luarocks install --local --verbose rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
-          luarocks install --local rockspecs/example2-1.0-1.rockspec
+          luarocks install --local --verbose rockspecs/example2-1.0-1.rockspec
           lua -e "print(require(\"example2.hello\"))"
