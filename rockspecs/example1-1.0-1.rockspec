@@ -14,6 +14,6 @@ build = {
         ["example2.hello"] = {
             sources = "src/test.c"
         }
-    }
+    },
     copy_directories = {}
 }
