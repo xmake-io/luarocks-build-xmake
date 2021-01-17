@@ -1,14 +1,14 @@
 add_rules("mode.debug", "mode.release")
 
 add_requires("lua")
-target("test.hello1")
+target("example1.hello")
     if is_plat("macosx") then
         set_kind("binary")
-        set_filename("hello1.so")
+        set_filename("hello.so")
         add_ldflags("-bundle", "-undefined dynamic_lookup", {force = true})
     else
         set_kind("shared")
-        set_basename("hello1")
+        set_basename("hello")
     end
     add_files("src/test.c")
     add_packages("lua")
