@@ -35,6 +35,7 @@ rule("luarocks.module")
 
         -- add lua library
         local has_lua = target:pkg("lua") or target:pkg("luajit")
+        print(has_lua)
         local includedirs = get_config("includedirs")
         if includedirs and includedirs:find("lua", 1, true) then
             has_lua = true
@@ -51,7 +52,8 @@ rule("luarocks.module")
     end)
 rule_end()
 
+add_requires("lua")
 target("example1.hello")
     add_rules("luarocks.module")
     add_files("src/test.c")
-
+    add_packages("lua")
