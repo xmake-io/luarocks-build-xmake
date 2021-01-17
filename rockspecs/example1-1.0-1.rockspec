@@ -10,6 +10,10 @@ dependencies = {
 }
 build = {
     type = "xmake",
-    modules = {},
+    modules = {
+        ["example2.hello"] = {
+            sources = "src/test.c"
+        }
+    }
     copy_directories = {}
 }
