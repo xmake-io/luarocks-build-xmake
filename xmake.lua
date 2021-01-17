@@ -32,6 +32,15 @@ rule("luarocks.module")
         else
             target:set("symbols", "none")
         end
+
+        -- add lua library
+        local has_lua = target:pkg("lua") or target:pkg("luajit")
+        local includedirs = get_config("includedirs")
+        if includedirs and includedirs:find("lua", 1, true) then
+            has_lua = true
+        end
+        print(has_lua)
+        print(includedirs)
     end)
     on_install(function (target)
         local moduledir = path.directory((target:name():gsub('%.', '/')))
