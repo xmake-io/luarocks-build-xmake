@@ -1,8 +1,7 @@
 package = "example1"
 version = "1.0-1"
 source = {
-    url = "git://github.com/xmake-io/luarocks-build-xmake",
-    tag = "example1"
+    url = "https://github.com/xmake-io/luarocks-build-xmake/archive/example1.tar.gz",
 }
 dependencies = {
     "lua >= 5.1",
@@ -11,7 +10,7 @@ dependencies = {
 build = {
     type = "xmake",
     modules = {
-        ["example2.hello"] = {
+        ["example1.hello"] = {
             sources = "src/test.c"
         }
     },
