@@ -21,10 +21,9 @@ jobs:
 
       - name: Tests
         run: |
-          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-          scoop install lua
-          Invoke-WebRequest "http://luarocks.github.io/luarocks/releases/luarocks-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
+          Invoke-WebRequest "http://luarocks.github.io/luarocks/releases/luarocks-3.5.0-win32.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
-          ./luarocks/luarocks-3.5.0-windows-64/luarocks.exe config --local lua_dir ~/scoop/apps/lua/5.4.2
-          ./luarocks/luarocks-3.5.0-windows-64/luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
+          Push-Location ./luarocks/luarocks-3.5.0-win32
+          ./install.bat /P temp /CONFIG temp/luarocks
+          temp/luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
