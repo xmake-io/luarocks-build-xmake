@@ -7,13 +7,13 @@
 
   <div>
     <a href="https://github.com/xmake-io/luarocks-build-xmake/actions?query=workflow%3AWindows">
-      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/Windows/dev.svg?style=flat-square&logo=windows" alt="github-ci" />
+      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/Windows/master.svg?style=flat-square&logo=windows" alt="github-ci" />
     </a>
     <a href="https://github.com/xmake-io/luarocks-build-xmake/actions?query=workflow%3ALinux">
-      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/Linux/dev.svg?style=flat-square&logo=linux" alt="github-ci" />
+      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/Linux/master.svg?style=flat-square&logo=linux" alt="github-ci" />
     </a>
     <a href="https://github.com/xmake-io/luarocks-build-xmake/actions?query=workflow%3AmacOS">
-      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/macOS/dev.svg?style=flat-square&logo=apple" alt="github-ci" />
+      <img src="https://img.shields.io/github/workflow/status/xmake-io/luarocks-build-xmake/macOS/master.svg?style=flat-square&logo=apple" alt="github-ci" />
     </a>
   </div>
   <div>
