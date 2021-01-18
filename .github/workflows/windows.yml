@@ -23,10 +23,10 @@ jobs:
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop install lua
-          tree C:\Users\runneradmin\scoop\shims /f
+          tree C:\Users\runneradmin\scoop\apps\lua\5.4.2 /f
           Invoke-WebRequest "https://luarocks.org/releases/luarocks-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks/luarocks-3.5.0-windows-64
-          ./luarocks.exe config --local lua_dir C:\Users\runneradmin\scoop\shims
+          ./luarocks_admin.exe config --local lua_dir C:\Users\runneradmin\scoop\shims
           ./luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
