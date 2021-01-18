@@ -23,6 +23,7 @@ jobs:
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop install lua
+          tree ~\scoop\apps\lua\5.4.2 /f
           #git clone https://github.com/LuaJIT/LuaJIT
           #Push-Location ./LuaJIT/src
           #./msvcbuild.bat
