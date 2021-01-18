@@ -21,9 +21,12 @@ jobs:
 
       - name: Tests
         run: |
-          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-          scoop install lua
-          tree C:\Users\runneradmin\scoop\apps\lua\5.4.2 /f
+          #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          #scoop install lua
+          #tree C:\Users\runneradmin\scoop\apps\lua\5.4.2 /f
+          Invoke-WebRequest "https://sourceforge.net/projects/luabinaries/files/5.4.2/Tools%20Executables/lua-5.4.2_Win64_bin.zip/download" -UseBasicParsing -OutFile ./lua.zip
+          Expand-Archive ./lua.zip -DestinationPath ./lua
+          tree ./lua /f
           Invoke-WebRequest "https://luarocks.org/releases/luarocks-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks/luarocks-3.5.0-windows-64
