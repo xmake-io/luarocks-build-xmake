@@ -26,6 +26,7 @@ jobs:
           tree C:\Users\runneradmin\scoop\shims /f
           Invoke-WebRequest "https://luarocks.org/releases/luarocks-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
-          tree luarocks /f
-          temp/luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
+          Push-Location ./luarocks/luarocks-3.5.0-windows-64
+          ./luarocks.exe config --local lua_dir C:\Users\runneradmin\scoop\shims
+          ./luarocks.exe install --local --verbose rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
