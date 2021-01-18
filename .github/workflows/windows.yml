@@ -18,7 +18,7 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-      - uses: leafo/gh-actions-lua@master
+      - uses: mileschou/lua-action@master
 
       - name: Tests
         run: |
