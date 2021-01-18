@@ -24,5 +24,5 @@ jobs:
           Invoke-WebRequest "https://github.com/xmake-mirror/luarocks/releases/download/v3.5.0/luarocks-all-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks
-          ./luarocks install --local --verbose rockspecs/example1-1.0-1.rockspec
+          ./luarocks install --local --verbose ../rockspecs/example1-1.0-1.rockspec
           ./bin/lua -e "print(require(\"example1.hello\"))"
