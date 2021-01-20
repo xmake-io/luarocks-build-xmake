@@ -25,12 +25,12 @@ jobs:
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks
           ./luarocks install --local --verbose ../rockspecs/example1-1.0-1.rockspec
-          $Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example1/test.lua)
-          ./bin/lua -e "print(require('example1.test'))"
+          #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example1/test.lua)
+          #./bin/lua -e "print(require('example1.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example1/hello.dll)
           ./bin/lua -e "print(require('example1.hello'))"
           ./luarocks install --local --verbose ../rockspecs/example2-1.0-1.rockspec
-          $Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example2/test.lua)
-          ./bin/lua -e "print(require('example2.test'))"
+          #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example2/test.lua)
+          #./bin/lua -e "print(require('example2.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example2/hello.dll)
           ./bin/lua -e "print(require('example2.hello'))"
