@@ -389,8 +389,6 @@ local function xmake_config_args(rockspec, build_variables)
     end
     if XMAKE_PLAT then
         args = args .. " -p " .. XMAKE_PLAT
-    elseif cfg.is_platform("mingw") then
-        args = args .. " -p mingw"
     end
     if XMAKE_ARCH then
         args = args .. " -a " .. XMAKE_ARCH

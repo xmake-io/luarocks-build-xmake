@@ -1,5 +1,5 @@
 package = "luarocks-build-xmake"
-version = "1.0-21"
+version = "1.0-22"
 source = {
     url = "git://github.com/xmake-io/luarocks-build-xmake",
     tag = "1.0"
