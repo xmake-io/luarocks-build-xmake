@@ -25,6 +25,7 @@ jobs:
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks
           ./luarocks install --local --verbose ../rockspecs/example1-1.0-1.rockspec
+          tree :/Users/runneradmin/AppData/Roaming/luarocks /f
           $Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example1/test.lua)
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example1/hello.dll)
           ./bin/lua -e "print(require('example1.hello'))"
