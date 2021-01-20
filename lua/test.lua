@@ -1,1 +1,1 @@
-print(require("example1.hello"))
+return require("example1.hello")
