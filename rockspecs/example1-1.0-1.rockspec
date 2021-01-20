@@ -10,5 +10,10 @@ dependencies = {
 }
 build = {
     type = "xmake",
+    install = {
+        lua = {
+            ["example1.test"] = "lua/test.lua"
+        }
+    },
     copy_directories = {}
 }
