@@ -1,1 +1,2 @@
-return require("example2.hello")
+return "hello2"
+
