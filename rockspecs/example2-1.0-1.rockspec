@@ -15,6 +15,11 @@ build = {
             sources = "src/test.c"
         }
     },
+    install = {
+        lua = {
+            ["example2.test"] = "lua/test.lua"
+        }
+    },
     copy_directories = {}
 }
 
