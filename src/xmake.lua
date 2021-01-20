@@ -220,36 +220,6 @@ local function autoextract_libs(external_dependencies, variables)
     return libs, incdirs, libdirs
 end
 
--- add platform configuration
-local function add_platform_configs(info, rockspec, name)
-
-    -- get variables
-    local variables = rockspec.variables
-    local XMAKE_PLAT = variables.XMAKE_PLAT or os.getenv("XMAKE_PLAT")
-
-    -- add lua library
-    info.incdirs   = info.incdirs or {}
-    info.libdirs   = info.libdirs or {}
-    info.libraries = info.libraries or {}
-    info._cflags   = info._cflags or {}
-    info._shflags  = info._shflags or {}
-    info._syslinks = info._syslinks or {}
-    if not XMAKE_PLAT then
-        table.insert(info._cflags, variables.CFLAGS)
-        table.insert(info._shflags, variables.LIBFLAG)
-    end
-
-    -- add platform configuration
-    if XMAKE_PLAT == "mingw" or cfg.is_platform("mingw") then
-        table.insert(info._syslinks, variables.MSVCRT or "m")
-    elseif cfg.is_platform("windows") then
-        local exported_name = name:gsub("%.", "_")
-        exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
-        table.insert(info._shflags, "/export:" .. "luaopen_"..exported_name)
-    end
-    print("LUA_INCDIR2", variables.LUA_INCDIR)
-end
-
 -- generate xmake.lua from builtin source files
 local function autogen_xmakefile(xmakefile, rockspec)
 
@@ -295,14 +265,13 @@ local function autogen_xmakefile(xmakefile, rockspec)
                 build_sources = true
                 local module_name = name:match("([^.]*)$") .. "." .. util.matchquote(cfg.lib_extension)
                 file:write('target("' .. name .. '")\n')
-                if not XMAKE_PLAT and cfg.is_platform("macosx") then
-                    file:write('    set_kind("binary")\n')
-                else
-                    file:write('    set_kind("shared")\n')
-                end
+                file:write('    if is_plat("macosx") then\n')
+                file:write('        set_kind("binary")\n')
+                file:write('    else\n')
+                file:write('        set_kind("shared")\n')
+                file:write('    end\n')
                 file:write('    set_symbols("none")\n')
                 file:write('    set_filename("' .. module_name .. '")\n')
-                add_platform_configs(info, rockspec, name)
                 for _, source in ipairs(sources) do
                     file:write("    add_files('" .. source .. "')\n")
                 end
@@ -348,7 +317,19 @@ local function autogen_xmakefile(xmakefile, rockspec)
                         file:write("    add_syslinks('" .. link .. "')\n")
                     end
                 end
-                -- Install modules, e.g. socket.core -> lib/socket/core.so
+
+                -- add platform configs
+                file:write("    if is_plat('mingw') then\n")
+                file:write("        add_syslinks('m')\n")
+                file:write("    elseif is_plat('windows') then\n")
+                local exported_name = name:gsub("%.", "_")
+                exported_name = exported_name:match('^[^%-]+%-(.+)$') or exported_name
+                file:write("        add_shflags('/export:luaopen_" .. exported_name .. "')\n")
+                file:write("    elseif is_plat('macosx') then\n")
+                file:write("        add_ldflags('-bundle', '-undefined dynamic_lookup', {force = true})\n")
+                file:write("    end\n")
+
+                -- install modules, e.g. socket.core -> lib/socket/core.so
                 file:write("    on_install(function (target)\n")
                 file:write("        local moduledir = path.directory((target:name():gsub('%.', '/')))\n")
                 file:write("        import('target.action.install')(target, {libdir = path.join('lib', moduledir), bindir = path.join('lib', moduledir)})\n")
