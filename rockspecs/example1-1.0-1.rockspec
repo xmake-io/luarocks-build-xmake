@@ -10,6 +10,11 @@ dependencies = {
 }
 build = {
     type = "xmake",
+    variables = {
+        xmake = {
+            version = "2.5.1"
+        }
+    },
     install = {
         lua = {
             ["example1.test"] = "lua/test.lua"

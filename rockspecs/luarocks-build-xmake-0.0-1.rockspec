@@ -2,7 +2,7 @@ package = "luarocks-build-xmake"
 version = "0.0-1"
 source = {
     url = "git://github.com/xmake-io/luarocks-build-xmake",
-    tag = "master"
+    tag = "dev"
 }
 description = {
     detailed = [[

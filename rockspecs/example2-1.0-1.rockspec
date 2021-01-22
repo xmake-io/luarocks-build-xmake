@@ -10,6 +10,11 @@ dependencies = {
 }
 build = {
     type = "xmake",
+    variables = {
+        xmake = {
+            version = "2.5.1"
+        }
+    },
     modules = {
         ["example2.hello"] = {
             sources = "src/test.c"

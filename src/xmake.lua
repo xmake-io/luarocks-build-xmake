@@ -46,7 +46,8 @@ local function get_host_arch()
         popen_result:close()
         raw_os_name = io.popen('uname -s','r'):read('*l')
         raw_arch_name = io.popen('uname -m','r'):read('*l')
-    else
+    end
+    if not raw_os_name then
         local env_OS = os.getenv('OS')
         local env_ARCH = os.getenv('PROCESSOR_ARCHITECTURE')
         if env_OS and env_ARCH then
@@ -99,6 +100,12 @@ if not cfg.is_platform then
         local os_name = get_host_arch()
         return os_name == plat
     end
+end
+
+-- is host arch?
+local function is_arch(arch)
+    local _, os_arch = get_host_arch()
+    return os_arch == arch
 end
 
 -- patch fs.quiet for luarocks 2.x
@@ -246,39 +253,26 @@ local function find_xmake(opt)
 end
 
 -- install xmake on unix
-local function install_xmake_on_unix(rockspec)
-
-    -- find git
-    local git, errors = find_git(rockspec)
-    if not git then
-        return nil, errors
-    end
+local function install_xmake_on_unix(rockspec, xmake_variables)
 
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
-    local store_file = dir.path(store_dir, "xmake.zip")
-    --[[
-    if not fs.execute(fs.Q(git), "clone", "--recurse-submodules", "https://github.com/xmake-io/xmake.git", store_dir) then
-        return nil, "download xmake sources failed!"
-    end]]
-    if not fs.download("https://github.com/xmake-io/xmake/releases/download/v2.5.1/xmake-v2.5.1.zip", store_file) then
+    local store_file = dir.path(store_dir, "xmake.tar.gz")
+    local version = xmake_variables.version or "2.5.1"
+    if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. ".tar.gz", store_file) then
         return nil, "download xmake sources failed!"
     end
 
+    -- extract sources
+    local previous_dir = fs.current_dir()
     local ok, errors = fs.change_dir(store_dir)
     if not ok then
         return nil, errors
     end
     fs.unpack_archive(store_file)
 
-
     -- build xmake
     local make = (cfg.is_platform("bsd") and fs.execute_quiet("gmake", "--version")) and "gmake" or "make"
-    local previous_dir = fs.current_dir()
-    local ok, errors = fs.change_dir(store_dir)
-    if not ok then
-        return nil, errors
-    end
     if not fs.execute(fs.Q(make)) then
         return nil, "build xmake sources failed!"
     end
@@ -298,15 +292,43 @@ local function install_xmake_on_unix(rockspec)
 end
 
 -- install xmake on windows
-local function install_xmake_on_windows(rockspec)
-end
+local function install_xmake_on_windows(rockspec, xmake_variables)
 
+    -- download xmake sources
+    local store_dir = fs.make_temp_dir("xmake")
+    local store_file = dir.path(store_dir, "xmake.zip")
+    local version = xmake_variables.version or "2.5.1"
+    local arch = is_arch("x86_64") and "win64" or "win32"
+    if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. "." .. arch .. ".zip", store_file) then
+        return nil, "download xmake sources failed!"
+    end
+
+    -- extract sources
+    local previous_dir = fs.current_dir()
+    local ok, errors = fs.change_dir(store_dir)
+    if not ok then
+        return nil, errors
+    end
+    fs.unpack_archive(store_file)
+
+    -- install xmake
+    local xmakedir = dir.path(rocks_dir(), "xmake")
+    fs.copy_contents(dir.path(store_dir, "xmake"), xmakedir, "exec")
+    ok, errors = fs.change_dir(previous_dir)
+    if not ok then
+        return nil, errors
+    end
+
+    -- find xmake again
+    return find_xmake({force = true})
+end
 -- install xmake
-local function install_xmake(rockspec)
+local function install_xmake(rockspec, build_variables)
+    local xmake_variables = build_variables.xmake or {}
     if cfg.is_platform("windows", "mingw") then
-        return install_xmake_on_windows(rockspec)
+        return install_xmake_on_windows(rockspec, xmake_variables)
     else
-        return install_xmake_on_unix(rockspec)
+        return install_xmake_on_unix(rockspec, xmake_variables)
     end
 end
 
@@ -563,7 +585,7 @@ function xmake.run(rockspec, no_install)
     local install_errors
     local xmake, errors = find_xmake()
     if not xmake then
-        xmake, install_errors = install_xmake(rockspec)
+        xmake, install_errors = install_xmake(rockspec, build_variables)
         if not xmake then
             return nil, install_xmake or errors
         end
