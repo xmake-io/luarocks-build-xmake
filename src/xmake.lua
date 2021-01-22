@@ -209,7 +209,7 @@ local function find_xmake(opt)
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
-                programfile = dir.path(rocks_dir(), "xmake", "bin", "xmake.exe")
+                programfile = dir.path(rocks_dir(), "xmake", "xmake.exe")
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
