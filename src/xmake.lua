@@ -112,7 +112,7 @@ if not fs.quiet then
 end
 
 -- patch fs.export_cmd for luarocks 2.x
-if not fs.export_cmd(var, val) then
+if not fs.export_cmd then
     function fs.export_cmd(var, val)
         if cfg.is_platform("windows", "mingw") then
             return ("SET %s=%s"):format(var, val)
@@ -255,18 +255,19 @@ local function install_xmake_on_unix(rockspec)
     end
 
     -- build xmake
+    local make = cfg.is_platform("bsd") and "gmake" or "make"
     local previous_dir = fs.current_dir()
     local ok, errors = fs.change_dir(store_dir)
     if not ok then
         return nil, errors
     end
-    if not fs.execute(fs.Q("make")) then
+    if not fs.execute(fs.Q(make)) then
         return nil, "build xmake sources failed!"
     end
 
     -- install xmake
     local xmakedir = dir.path(path.rocks_dir(), "xmake")
-    if not fs.execute(fs.Q("make"), "install", "PREFIX=" .. xmakedir) then
+    if not fs.execute(fs.Q(make), "install", "PREFIX=" .. xmakedir) then
         return nil, "install xmake sources failed!"
     end
     ok, errors = fs.change_dir(previous_dir)
