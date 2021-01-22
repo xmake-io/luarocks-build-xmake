@@ -111,6 +111,17 @@ if not fs.quiet then
     end
 end
 
+-- patch fs.export_cmd for luarocks 2.x
+if not fs.export_cmd(var, val) then
+    function fs.export_cmd(var, val)
+        if cfg.is_platform("windows", "mingw") then
+            return ("SET %s=%s"):format(var, val)
+        else
+            return ("export %s='%s'"):format(var, val)
+        end
+    end
+end
+
 local function quote_args(command, ...)
     local out = { command }
     local args = pack(...)
@@ -157,10 +168,28 @@ if not fs.execute_env then
     end
 end
 
+-- find git
+local git_program
+local function find_git(rockspec)
+    local git = rockspec.variables.GIT or "git"
+    if git_program == nil then
+        if fs.execute_quiet(git, "--version") then
+            git_program = git
+        end
+    end
+    if git_program then
+        return git_program
+    else
+        local errors = "'git' program not found. Make sure git is installed and is available in your $PATH."
+        return false, errors
+    end
+end
+
 -- find xmake
 local xmake_program
-local function find_xmake()
-    if xmake_program == nil then
+local function find_xmake(opt)
+    opt = opt or {}
+    if xmake_program == nil or opt.force then
         if fs.execute_quiet("xmake", "--version") then
             xmake_program = "xmake"
         end
@@ -202,6 +231,57 @@ local function find_xmake()
     end
 end
 
+-- install xmake on unix
+local function install_xmake_on_unix(rockspec)
+
+    -- find git
+    local git, errors = find_git(rockspec)
+    if not git then
+        return nil, errors
+    end
+
+    -- download xmake sources
+    local store_dir = fs.make_temp_dir(name_version)
+    if not fs.execute(fs.Q(git), "clone", "--recurse-submodules", "https://github.com/xmake-io/xmake-repo.git", store_dir) then
+        return nil, "download xmake sources failed!"
+    end
+
+    -- build xmake
+    local previous_dir = fs.current_dir()
+    local ok, errors = fs.change_dir(store_dir)
+    if not ok then
+        return nil, errors
+    end
+    if not fs.execute(fs.Q("make")) then
+        return nil, "build xmake sources failed!"
+    end
+
+    -- install xmake
+    if not fs.execute(fs.Q("sh"), "scripts/get.sh", "__local__", "__install_only__") then
+        return nil, "install xmake sources failed!"
+    end
+    ok, errors = fs.change_dir(previous_dir)
+    if not ok then
+        return nil, errors
+    end
+
+    -- find xmake again
+    return find_xmake({force = true})
+end
+
+-- install xmake on windows
+local function install_xmake_on_windows(rockspec)
+end
+
+-- install xmake
+local function install_xmake(rockspec)
+    if cfg.is_platform("windows", "mingw") then
+        return install_xmake_on_windows(rockspec)
+    else
+        return install_xmake_on_unix(rockspec)
+    end
+end
+
 -- from builtin.autoextract_libs
 local function autoextract_libs(external_dependencies, variables)
     if not external_dependencies then
@@ -237,7 +317,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
         end
     end
 
-    -- Check lua.h
+    -- check lua.h
     local variables = rockspec.variables
     local lua_incdir, lua_h = variables.LUA_INCDIR, "lua.h"
     if not fs.exists(dir.path(lua_incdir, lua_h)) then
@@ -452,9 +532,13 @@ function xmake.run(rockspec, no_install)
     util.variable_substitutions(build_variables, rockspec.variables)
 
     -- find xmake
+    local install_errors
     local xmake, errors = find_xmake()
     if not xmake then
-        return nil, errors
+        xmake, install_errors = install_xmake(rockspec)
+        if not xmake then
+            return nil, install_xmake or errors
+        end
     end
 
     -- if inline xmake is present create xmake.lua from it.
