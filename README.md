@@ -47,6 +47,8 @@
 
 A fork of built-in build system for C++ rocks. Specify "xmake" as build type and "luarocks-build-xmake" as dependency to use it.
 
+About xmake, please see [xmake](https://github.com/xmake-io/xmake).
+
 ## Example1 (with xmake.lua)
 
 We can build c/c++ modules if the project contain xmake.lua

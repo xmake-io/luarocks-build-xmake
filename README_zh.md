@@ -47,6 +47,8 @@
 
 替换 luarocks 内置的构建系统去构建 C/C++ 模块，指定 xmake 作为构建类型，并添加 `luarocks-build-xmake` 依赖项。
 
+关于 xmake 构建系统，详情见：[xmake](https://github.com/xmake-io/xmake).
+
 ## 例子1 (带有 xmake.lua)
 
 如果模块工程中使用了 xmake.lua 来维护构建，那么我们可以直接使用 xmake 去构建它，rockspec 文件中不需要额外的配置构建规则。
