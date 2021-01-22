@@ -260,7 +260,7 @@ local function install_xmake_on_unix(rockspec)
     end
 
     -- build xmake
-    local make = cfg.is_platform("bsd") and "gmake" or "make"
+    local make = (cfg.is_platform("bsd") and fs.execute_quiet("gmake", "--version")) and "gmake" or "make"
     local previous_dir = fs.current_dir()
     local ok, errors = fs.change_dir(store_dir)
     if not ok then
