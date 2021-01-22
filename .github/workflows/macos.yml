@@ -17,9 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: branch@dev
       - uses: leafo/gh-actions-lua@v8
         with:
           luaVersion: ${{ matrix.luaVersion }}
