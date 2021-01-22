@@ -168,6 +168,11 @@ if not fs.execute_env then
     end
 end
 
+-- get rocks directory
+local function rocks_dir()
+    return cfg.rocks_dir or path.rocks_dir()
+end
+
 -- find git
 local git_program
 local function find_git(rockspec)
@@ -204,7 +209,7 @@ local function find_xmake(opt)
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
-                programfile = dir.path(path.rocks_dir(), "xmake", "bin", "xmake.exe")
+                programfile = dir.path(rocks_dir(), "xmake", "bin", "xmake.exe")
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
@@ -224,7 +229,7 @@ local function find_xmake(opt)
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
-                programfile = dir.path(path.rocks_dir(), "xmake", "bin", "xmake")
+                programfile = dir.path(rocks_dir(), "xmake", "bin", "xmake")
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
@@ -266,7 +271,7 @@ local function install_xmake_on_unix(rockspec)
     end
 
     -- install xmake
-    local xmakedir = dir.path(path.rocks_dir(), "xmake")
+    local xmakedir = dir.path(rocks_dir(), "xmake")
     if not fs.execute(fs.Q(make), "install", "PREFIX=" .. xmakedir) then
         return nil, "install xmake sources failed!"
     end
