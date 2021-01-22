@@ -242,7 +242,7 @@ local function install_xmake_on_unix(rockspec)
 
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
-    if not fs.execute(fs.Q(git), "clone", "--recurse-submodules", "https://github.com/xmake-io/xmake-repo.git", store_dir) then
+    if not fs.execute(fs.Q(git), "clone", "--recurse-submodules", "https://github.com/xmake-io/xmake.git", store_dir) then
         return nil, "download xmake sources failed!"
     end
 
