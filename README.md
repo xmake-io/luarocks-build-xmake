@@ -140,3 +140,32 @@ build = {
     copy_directories = {}
 }
 ```
+
+## Set xmake compilation configuration
+
+```lua
+dependencies = {
+    "lua >= 5.1",
+    "luarocks-build-xmake"
+}
+build = {
+    type = "xmake",
+    variables = {
+        xmake = {
+            plat = "mingw",
+            arch = "x86_64",
+            mode = "debug",
+            cflags = "-DTEST1",
+            cc = "gcc",
+            ld = "gcc",
+            ldflags = "...",
+            mingw = "mingw sdk path",
+            vs = "2019",
+            vs_runtime = "MT",
+            vs_toolset = "",
+            vs_sdkver = "",
+        }
+    },
+    copy_directories = {}
+}
+```

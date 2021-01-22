@@ -376,7 +376,6 @@ local function autogen_xmakefile(xmakefile, rockspec)
     end
 
     -- generate xmake.lua
-    local XMAKE_PLAT = variables.XMAKE_PLAT or os.getenv("XMAKE_PLAT")
     local build_sources = false
     local file = assert(io.open(xmakefile, "w"))
     file:write('add_rules("mode.release", "mode.debug")\n')
@@ -480,21 +479,22 @@ local function xmake_config_args(rockspec, build_variables)
 
     local args = ""
     local variables                 = rockspec.variables
-    local XMAKE_PLAT                = build_variables.XMAKE_PLAT or os.getenv("XMAKE_PLAT")
-    local XMAKE_ARCH                = build_variables.XMAKE_ARCH or os.getenv("XMAKE_ARCH")
-    local XMAKE_MODE                = build_variables.XMAKE_ARCH or os.getenv("XMAKE_MODE")
-    local XMAKE_SDK                 = build_variables.XMAKE_SDK or os.getenv("XMAKE_SDK")
-    local XMAKE_MINGW               = build_variables.XMAKE_MINGW or os.getenv("XMAKE_MINGW")
-    local XMAKE_TOOLCHAIN           = build_variables.XMAKE_TOOLCHAIN or os.getenv("XMAKE_TOOLCHAIN")
-    local XMAKE_CC                  = build_variables.XMAKE_CC or os.getenv("XMAKE_CC")
-    local XMAKE_LD                  = build_variables.XMAKE_LD or os.getenv("XMAKE_LD")
-    local XMAKE_CFLAGS              = build_variables.XMAKE_CFLAGS or os.getenv("XMAKE_CFLAGS")
-    local XMAKE_LDFLAGS             = build_variables.XMAKE_LDFLAGS or os.getenv("XMAKE_LDFLAGS")
-    local XMAKE_VS                  = build_variables.XMAKE_VS or os.getenv("XMAKE_VS")
-    local XMAKE_VS_SDKVER           = build_variables.XMAKE_VS_SDKVER or os.getenv("XMAKE_VS_SDKVER")
-    local XMAKE_VS_RUNTIME          = build_variables.XMAKE_VS_RUNTIME or os.getenv("XMAKE_VS_RUNTIME")
-    local XMAKE_VS_TOOLSET          = build_variables.XMAKE_VS_TOOLSET or os.getenv("XMAKE_VS_TOOLSET")
-    local XMAKE_XCODE_TARGET_MINVER = build_variables.XMAKE_XCODE_TARGET_MINVER or os.getenv("XMAKE_XCODE_TARGET_MINVER")
+    local xmake_variables           = build_variables.xmake or {}
+    local XMAKE_PLAT                = xmake_variables.plat or os.getenv("XMAKE_PLAT")
+    local XMAKE_ARCH                = xmake_variables.arch or os.getenv("XMAKE_ARCH")
+    local XMAKE_MODE                = xmake_variables.mode or os.getenv("XMAKE_MODE")
+    local XMAKE_SDK                 = xmake_variables.sdk or os.getenv("XMAKE_SDK")
+    local XMAKE_MINGW               = xmake_variables.mingw or os.getenv("XMAKE_MINGW")
+    local XMAKE_TOOLCHAIN           = xmake_variables.toolchain or os.getenv("XMAKE_TOOLCHAIN")
+    local XMAKE_CC                  = xmake_variables.cc or os.getenv("XMAKE_CC")
+    local XMAKE_LD                  = xmake_variables.ld or os.getenv("XMAKE_LD")
+    local XMAKE_CFLAGS              = xmake_variables.cflags or os.getenv("XMAKE_CFLAGS")
+    local XMAKE_LDFLAGS             = xmake_variables.ldflags or os.getenv("XMAKE_LDFLAGS")
+    local XMAKE_VS                  = xmake_variables.vs or os.getenv("XMAKE_VS")
+    local XMAKE_VS_SDKVER           = xmake_variables.vs_sdkver or os.getenv("XMAKE_VS_SDKVER")
+    local XMAKE_VS_RUNTIME          = xmake_variables.vs_runtime or os.getenv("XMAKE_VS_RUNTIME")
+    local XMAKE_VS_TOOLSET          = xmake_variables.vs_toolset or os.getenv("XMAKE_VS_TOOLSET")
+    local XMAKE_XCODE_TARGET_MINVER = xmake_variables.xcode_target_minver or os.getenv("XMAKE_XCODE_TARGET_MINVER")
     if cfg.verbose then
         args = args .. " -vD"
     end
