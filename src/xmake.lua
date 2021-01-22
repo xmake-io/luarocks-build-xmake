@@ -24,6 +24,7 @@ local fs      = require("luarocks.fs")
 local util    = require("luarocks.util")
 local dir     = require("luarocks.dir")
 local path    = require("luarocks.path")
+local fetch   = require("luarocks.fetch")
 local builtin = require("luarocks.build.builtin")
 local cfg_ok, cfg = pcall(require, "luarocks.core.cfg")
 if not cfg_ok then
@@ -255,9 +256,21 @@ local function install_xmake_on_unix(rockspec)
 
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
+    local store_file = dir.path(store_dir, "xmake.zip")
+    --[[
     if not fs.execute(fs.Q(git), "clone", "--recurse-submodules", "https://github.com/xmake-io/xmake.git", store_dir) then
         return nil, "download xmake sources failed!"
+    end]]
+    if not fs.download("https://github.com/xmake-io/xmake/releases/download/v2.5.1/xmake-v2.5.1.zip", store_file) then
+        return nil, "download xmake sources failed!"
     end
+
+    local ok, errors = fs.change_dir(store_dir)
+    if not ok then
+        return nil, errors
+    end
+    fs.unpack_archive(store_file)
+
 
     -- build xmake
     local make = (cfg.is_platform("bsd") and fs.execute_quiet("gmake", "--version")) and "gmake" or "make"
