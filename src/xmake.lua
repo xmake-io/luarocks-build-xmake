@@ -204,6 +204,10 @@ local function find_xmake(opt)
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
+                programfile = path.dir(path.rocks_dir(), "xmake", "bin", "xmake.exe")
+                if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
+                    xmake_program = programfile
+                end
             else
                 local HOME = os.getenv("HOME")
                 if HOME then
@@ -217,6 +221,10 @@ local function find_xmake(opt)
                     xmake_program = programfile
                 end
                 programfile = "/usr/bin/xmake"
+                if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
+                    xmake_program = programfile
+                end
+                programfile = path.dir(path.rocks_dir(), "xmake", "bin", "xmake")
                 if not xmake_program and fs.is_file(programfile) and fs.execute_quiet(programfile, "--version") then
                     xmake_program = programfile
                 end
@@ -257,7 +265,8 @@ local function install_xmake_on_unix(rockspec)
     end
 
     -- install xmake
-    if not fs.execute(fs.Q("sh"), "scripts/get.sh", "__local__", "__install_only__") then
+    local xmakedir = path.dir(path.rocks_dir(), "xmake")
+    if not fs.execute(fs.Q("make"), "install", "PREFIX=" .. xmakedir) then
         return nil, "install xmake sources failed!"
     end
     ok, errors = fs.change_dir(previous_dir)
