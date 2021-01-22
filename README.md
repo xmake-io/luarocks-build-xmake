@@ -122,3 +122,21 @@ build = {
     copy_directories = {}
 }
 ```
+
+## Set special xmake version
+
+```lua
+dependencies = {
+    "lua >= 5.1",
+    "luarocks-build-xmake"
+}
+build = {
+    type = "xmake",
+    variables = {
+        xmake = {
+            version = "2.5.1"
+        }
+    },
+    copy_directories = {}
+}
+```
