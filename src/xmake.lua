@@ -508,10 +508,10 @@ local function xmake_config_args(rockspec, build_variables)
         args = args .. " -m " .. XMAKE_MODE
     end
     if XMAKE_SDK then
-        args = args .. " --sdk=" .. XMAKE_SDK
+        args = args .. " --sdk=\"" .. XMAKE_SDK .. "\""
     end
     if XMAKE_MINGW then
-        args = args .. " --mingw=" .. XMAKE_MINGW
+        args = args .. " --mingw=\"" .. XMAKE_MINGW .. "\""
     end
     if XMAKE_TOOLCHAIN then
         args = args .. " --toolchain=" .. XMAKE_TOOLCHAIN
@@ -548,11 +548,11 @@ local function xmake_config_args(rockspec, build_variables)
     end
     -- add lua library
     if variables.LUA_INCDIR then
-        args = args .. " --includedirs=" .. variables.LUA_INCDIR
+        args = args .. " --includedirs=\"" .. variables.LUA_INCDIR .. "\""
     end
     if cfg.link_lua_explicitly or XMAKE_PLAT == "mingw" or cfg.is_platform("mingw") then
         if variables.LUA_LIBDIR then
-            args = args .. " --linkdirs=" .. variables.LUA_LIBDIR
+            args = args .. " --linkdirs=\"" .. variables.LUA_LIBDIR .. "\""
         end
         if variables.LUALIB then
             local lualib = variables.LUALIB
