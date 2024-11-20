@@ -1,7 +1,7 @@
 package = "example1"
 version = "1.0-1"
 source = {
-    url = "git://github.com/xmake-io/luarocks-build-xmake",
+    url = "git+https://github.com/xmake-io/luarocks-build-xmake",
     tag = "example1"
 }
 dependencies = {
