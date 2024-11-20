@@ -258,7 +258,7 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.tar.gz")
-    local version = xmake_variables.version or "2.5.1"
+    local version = xmake_variables.version or "2.7.6"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. ".tar.gz", store_file) then
         return nil, "download xmake sources failed!"
     end
@@ -270,6 +270,11 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
         return nil, errors
     end
     fs.unpack_archive(store_file)
+
+    -- configure xmake
+    if not fs.execute("./configure") then
+        return nil, "configure xmake sources failed!"
+    end
 
     -- build xmake
     local make = (cfg.is_platform("bsd") and fs.execute_quiet("gmake", "--version")) and "gmake" or "make"
@@ -297,7 +302,7 @@ local function install_xmake_on_windows(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.zip")
-    local version = xmake_variables.version or "2.5.1"
+    local version = xmake_variables.version or "2.7.6"
     local arch = is_arch("x86_64") and "win64" or "win32"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. "." .. arch .. ".zip", store_file) then
         return nil, "download xmake sources failed!"
@@ -322,6 +327,7 @@ local function install_xmake_on_windows(rockspec, xmake_variables)
     -- find xmake again
     return find_xmake({force = true})
 end
+
 -- install xmake
 local function install_xmake(rockspec, build_variables)
     local xmake_variables = build_variables.xmake or {}
@@ -583,7 +589,7 @@ function xmake.run(rockspec, no_install)
 
     -- find xmake
     local install_errors
-    local xmake, errors = find_xmake()
+    local xmake, errors-- = find_xmake()
     if not xmake then
         xmake, install_errors = install_xmake(rockspec, build_variables)
         if not xmake then
