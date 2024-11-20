@@ -589,7 +589,7 @@ function xmake.run(rockspec, no_install)
 
     -- find xmake
     local install_errors
-    local xmake, errors-- = find_xmake()
+    local xmake, errors = find_xmake()
     if not xmake then
         xmake, install_errors = install_xmake(rockspec, build_variables)
         if not xmake then
