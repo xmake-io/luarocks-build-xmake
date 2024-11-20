@@ -24,6 +24,10 @@ jobs:
         with:
           luarocksVersion: ${{ matrix.luarocksVersion }}
 
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: branch@dev
+
       - name: Tests
         run: |
           luarocks install --local rockspecs/example1-1.0-1.rockspec

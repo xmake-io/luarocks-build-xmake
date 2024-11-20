@@ -16,6 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: branch@dev
+
       - name: Tests
         run: |
           Invoke-WebRequest "https://github.com/xmake-mirror/luarocks/releases/download/v3.5.0/luarocks-all-3.5.0-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
