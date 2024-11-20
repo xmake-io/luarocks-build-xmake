@@ -12,7 +12,7 @@ build = {
     type = "xmake",
     variables = {
         xmake = {
-            version = "2.5.1",
+            version = "2.7.6",
             cflags = "-DTEST2"
         }
     },
