@@ -258,14 +258,14 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.tar.gz")
-    local version = xmake_variables.version or "2.7.6"
+    local version = xmake_variables.version or "2.9.6"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. ".tar.gz", store_file) then
         return nil, "download xmake sources failed!"
     end
 
     -- extract sources
     local previous_dir = fs.current_dir()
-    local ok, errors = fs.change_dir(store_dir)
+    local ok, errors = fs.change_dir(dir.path(store_dir, "xmake-" .. version))
     if not ok then
         return nil, errors
     end
@@ -302,7 +302,7 @@ local function install_xmake_on_windows(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.zip")
-    local version = xmake_variables.version or "2.7.6"
+    local version = xmake_variables.version or "2.9.6"
     local arch = is_arch("x86_64") and "win64" or "win32"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. "." .. arch .. ".zip", store_file) then
         return nil, "download xmake sources failed!"
