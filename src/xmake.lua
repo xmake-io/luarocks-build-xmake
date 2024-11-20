@@ -265,11 +265,15 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
 
     -- extract sources
     local previous_dir = fs.current_dir()
-    local ok, errors = fs.change_dir(dir.path(store_dir, "xmake-" .. version))
+    local ok, errors = fs.change_dir(store_dir)
     if not ok then
         return nil, errors
     end
     fs.unpack_archive(store_file)
+    ok, errors = fs.change_dir("xmake-" .. version)
+    if not ok then
+        return nil, errors
+    end
 
     -- configure xmake
     if not fs.execute("./configure") then
