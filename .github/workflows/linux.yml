@@ -15,6 +15,10 @@ jobs:
         luarocksVersion: ["3.5.0", "3.0.1"]
     runs-on: ${{ matrix.os }}
 
+    concurrency:
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-Linux-${{ matrix.luaVersion }}-${{ matrix.luarocksVersion }}
+        cancel-in-progress: true
+
     steps:
       - uses: actions/checkout@v2
       - uses: leafo/gh-actions-lua@v8
