@@ -381,7 +381,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
     local variables = rockspec.variables
     local lua_incdir, lua_h = variables.LUA_INCDIR, "lua.h"
     if not fs.exists(dir.path(lua_incdir, lua_h)) then
-        return nil, "Lua header file " .. lua_h .. " not found (looked in " .. lua_incdir .. "). \n"  .. 
+        return nil, "Lua header file " .. lua_h .. " not found (looked in " .. lua_incdir .. "). \n"  ..
         "You need to install the Lua development package for your system."
     end
 
@@ -470,8 +470,17 @@ local function autogen_xmakefile(xmakefile, rockspec)
 
                 -- install modules, e.g. socket.core -> lib/socket/core.so
                 file:write("    on_install(function (target)\n")
+                file:write("        if target:is_plat(\"macosx\") then\n")
+                file:write("            target:set(\"kind\", \"shared\")\n")
+                file:write("        end\n")
                 file:write("        local moduledir = path.directory((target:name():gsub('%.', '/')))\n")
-                file:write("        import('target.action.install')(target, {libdir = path.join('lib', moduledir), bindir = path.join('lib', moduledir)})\n")
+                file:write("        import(\"target.action.install\")(target, {\n")
+                file:write("            installdir = target:installdir(),\n")
+                file:write("            libdir = path.join(\"lib\", moduledir),\n")
+                file:write("            bindir = path.join(\"lib\", moduledir),\n")
+                file:write("            includedir = path.join(\"include\", moduledir)})\n")
+                file:write("            end\n")
+                file:write("        end\n")
                 file:write("    end)\n")
                 file:write('\n')
             end
