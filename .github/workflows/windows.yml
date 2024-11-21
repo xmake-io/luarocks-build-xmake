@@ -32,7 +32,7 @@ jobs:
           xmake --version
           Invoke-WebRequest "https://luarocks.github.io/luarocks/releases/luarocks-3.11.1-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
-          Push-Location ./luarocks
+          Push-Location ./luarocks/luarocks-3.11.1-windows-64
           ./luarocks.exe install --local ../rockspecs/example1-1.0-1.rockspec
           xmake l os.files "C:/Users/runneradmin/AppData/Roaming/luarocks/**"
           #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example1/test.lua)
