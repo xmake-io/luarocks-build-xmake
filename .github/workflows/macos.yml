@@ -11,9 +11,13 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        luaVersion: ["5.4.1", "5.1.5", "luajit-2.1.0-beta3"]
+        luaVersion: ["5.4.1", "5.1.5", "luajit-openresty"]
         luarocksVersion: ["3.5.0", "3.0.1"]
     runs-on: ${{ matrix.os }}
+
+    concurrency:
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-MacOS-${{ matrix.luaVersion }}-${{ matrix.luarocksVersion }}
+        cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v2
