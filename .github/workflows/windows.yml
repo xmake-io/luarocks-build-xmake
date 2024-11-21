@@ -11,10 +11,14 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
+        luaVersion: ["5.4.1"]
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
+      - uses: leafo/gh-actions-lua@v8
+        with:
+          luaVersion: ${{ matrix.luaVersion }}
 
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
@@ -38,11 +42,11 @@ jobs:
           #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example1/test.lua)
           #./bin/lua -e "print(require('example1.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example1/hello.dll)
-          ./bin/lua -e "print(require('example1.hello'))"
+          lua -e "print(require('example1.hello'))"
           ./luarocks install --local ../rockspecs/example2-1.0-1.rockspec
           xmake l os.files "C:/Users/runneradmin/AppData/Roaming/luarocks/**"
           #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example2/test.lua)
           #./bin/lua -e "print(require('example2.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example2/hello.dll)
-          ./bin/lua -e "print(require('example2.hello'))"
+          lua -e "print(require('example2.hello'))"
 
