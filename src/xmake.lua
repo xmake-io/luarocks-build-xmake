@@ -668,6 +668,8 @@ function xmake.run(rockspec, no_install)
 
     local libdir = path.lib_dir(rockspec.name, rockspec.version)
     fs.copy_contents(dir.path("output", "lib"), libdir, "exec")
+    local luadir = path.lua_dir(rockspec.name, rockspec.version)
+    fs.copy_contents("lua", luadir)
 
     return true
 end
