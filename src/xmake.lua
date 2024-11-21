@@ -479,8 +479,6 @@ local function autogen_xmakefile(xmakefile, rockspec)
                 file:write("            libdir = path.join(\"lib\", moduledir),\n")
                 file:write("            bindir = path.join(\"lib\", moduledir),\n")
                 file:write("            includedir = path.join(\"include\", moduledir)})\n")
-                file:write("            end\n")
-                file:write("        end\n")
                 file:write("    end)\n")
                 file:write('\n')
             end
