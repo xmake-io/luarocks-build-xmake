@@ -16,17 +16,31 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: branch@dev
+
       - name: Tests
         run: |
+          git clone https://github.com/xmake-io/xmake.git --recurse-submodules -b dev xmakesrc
+          cd xmakesrc/core
+          xmake
+          cd ../..
+          Copy-Item ./xmakesrc/core/build/xmake.exe ./xmakesrc/xmake
+          $Env:XMAKE_PROGRAM_DIR = $(Resolve-Path ./xmakesrc/xmake)
+          Set-Item -Path Env:Path -Value ($Env:XMAKE_PROGRAM_DIR + ";" + $Env:Path)
+          xmake --version
           Invoke-WebRequest "https://luarocks.github.io/luarocks/releases/luarocks-3.11.1-windows-64.zip" -UseBasicParsing -OutFile ./luarocks.zip
           Expand-Archive ./luarocks.zip -DestinationPath ./luarocks
           Push-Location ./luarocks
-          ./luarocks install --local --verbose ../rockspecs/example1-1.0-1.rockspec
+          ./luarocks.exe install --local ../rockspecs/example1-1.0-1.rockspec
+          xmake l os.files "C:/Users/runneradmin/AppData/Roaming/luarocks/**"
           #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example1/test.lua)
           #./bin/lua -e "print(require('example1.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example1/hello.dll)
           ./bin/lua -e "print(require('example1.hello'))"
-          ./luarocks install --local --verbose ../rockspecs/example2-1.0-1.rockspec
+          ./luarocks install --local ../rockspecs/example2-1.0-1.rockspec
+          xmake l os.files "C:/Users/runneradmin/AppData/Roaming/luarocks/**"
           #$Env:LUA_PATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/share/lua/5.3/example2/test.lua)
           #./bin/lua -e "print(require('example2.test'))"
           $Env:LUA_CPATH = $(Resolve-Path C:/Users/runneradmin/AppData/Roaming/luarocks/lib/lua/5.3/example2/hello.dll)

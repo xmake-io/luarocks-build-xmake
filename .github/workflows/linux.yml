@@ -24,11 +24,15 @@ jobs:
         with:
           luarocksVersion: ${{ matrix.luarocksVersion }}
 
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: branch@dev
+
       - name: Tests
         run: |
-          luarocks install --local --verbose rockspecs/example1-1.0-1.rockspec
+          luarocks install --local rockspecs/example1-1.0-1.rockspec
           lua -e "print(require(\"example1.hello\"))"
           lua -e "print(require(\"example1.test\"))"
-          luarocks install --local --verbose rockspecs/example2-1.0-1.rockspec
+          luarocks install --local rockspecs/example2-1.0-1.rockspec
           lua -e "print(require(\"example2.hello\"))"
           lua -e "print(require(\"example2.test\"))"

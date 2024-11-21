@@ -258,7 +258,7 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.tar.gz")
-    local version = xmake_variables.version or "2.5.1"
+    local version = xmake_variables.version or "2.9.6"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. ".tar.gz", store_file) then
         return nil, "download xmake sources failed!"
     end
@@ -270,6 +270,15 @@ local function install_xmake_on_unix(rockspec, xmake_variables)
         return nil, errors
     end
     fs.unpack_archive(store_file)
+    ok, errors = fs.change_dir("xmake-" .. version)
+    if not ok then
+        return nil, errors
+    end
+
+    -- configure xmake
+    if not fs.execute("./configure") then
+        return nil, "configure xmake sources failed!"
+    end
 
     -- build xmake
     local make = (cfg.is_platform("bsd") and fs.execute_quiet("gmake", "--version")) and "gmake" or "make"
@@ -297,7 +306,7 @@ local function install_xmake_on_windows(rockspec, xmake_variables)
     -- download xmake sources
     local store_dir = fs.make_temp_dir("xmake")
     local store_file = dir.path(store_dir, "xmake.zip")
-    local version = xmake_variables.version or "2.5.1"
+    local version = xmake_variables.version or "2.9.6"
     local arch = is_arch("x86_64") and "win64" or "win32"
     if not fs.download("https://github.com/xmake-io/xmake/releases/download/v" .. version .. "/xmake-v" .. version .. "." .. arch .. ".zip", store_file) then
         return nil, "download xmake sources failed!"
@@ -322,6 +331,7 @@ local function install_xmake_on_windows(rockspec, xmake_variables)
     -- find xmake again
     return find_xmake({force = true})
 end
+
 -- install xmake
 local function install_xmake(rockspec, build_variables)
     local xmake_variables = build_variables.xmake or {}
@@ -371,7 +381,7 @@ local function autogen_xmakefile(xmakefile, rockspec)
     local variables = rockspec.variables
     local lua_incdir, lua_h = variables.LUA_INCDIR, "lua.h"
     if not fs.exists(dir.path(lua_incdir, lua_h)) then
-        return nil, "Lua header file " .. lua_h .. " not found (looked in " .. lua_incdir .. "). \n"  .. 
+        return nil, "Lua header file " .. lua_h .. " not found (looked in " .. lua_incdir .. "). \n"  ..
         "You need to install the Lua development package for your system."
     end
 
@@ -460,8 +470,15 @@ local function autogen_xmakefile(xmakefile, rockspec)
 
                 -- install modules, e.g. socket.core -> lib/socket/core.so
                 file:write("    on_install(function (target)\n")
+                file:write("        if target:is_plat(\"macosx\") then\n")
+                file:write("            target:set(\"kind\", \"shared\")\n")
+                file:write("        end\n")
                 file:write("        local moduledir = path.directory((target:name():gsub('%.', '/')))\n")
-                file:write("        import('target.action.install')(target, {libdir = path.join('lib', moduledir), bindir = path.join('lib', moduledir)})\n")
+                file:write("        import(\"target.action.install\")(target, {\n")
+                file:write("            installdir = target:installdir(),\n")
+                file:write("            libdir = path.join(\"lib\", moduledir),\n")
+                file:write("            bindir = path.join(\"lib\", moduledir),\n")
+                file:write("            includedir = path.join(\"include\", moduledir)})\n")
                 file:write("    end)\n")
                 file:write('\n')
             end
