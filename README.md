@@ -51,13 +51,13 @@ We can build c/c++ modules if the project contain xmake.lua
 
 #### xmake.lua
 
-We need to use `add_rules("luarocks.module")` to add build rules for luarocks modules.
+We need to use `add_rules("lua.module")` to add build rules for lua modules.
 
 ```lua
 add_rules("mode.debug", "mode.release")
 
 target("example1.hello")
-    add_rules("luarocks.module")
+    add_rules("lua.module")
     add_files("src/test.c")
 ```
 
